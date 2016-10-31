@@ -61,6 +61,13 @@ def no_corr_mannwhitneyu(cond1, cond2):
 
 
 def unpair_no_corr_perm_t_test(cond1, cond2):
+    #     n_permutations = 1000
+    #     s1 = cond1.shape[0]
+    #     s2 = cond2.shape[0]
+    #     pool = np.vstack([cond1,cond2])
+    #     perm = np.random.choice(range(s1 + s2), s1)
+    #     sample = bag[perm, :]
+    #     print perm.shape
     p_vals = np.ones(cond1.shape[1])
     from permute.core import two_sample
     for i in xrange(cond1.shape[1]):
