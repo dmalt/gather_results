@@ -11,6 +11,27 @@ except ImportError:
     from io import StringIO
 # --------------------------------------- #
 
+def LoadAutGamma(dirname, subj_names):
+    data = list()
+    fnames = list()
+    for subj_name in subj_names:
+        fname = [f for f in os.listdir(dirname) if f.startswith(subj_name)]
+        if fname:
+            fname = fname[0]
+            abs_fname = os.path.join(dirname, fname)
+            cur_matr = np.load(abs_fname).mean(axis=0)
+        else:
+            cur_matr = np.full((306,), np.nan)
+        if cur_matr.shape[0] != 306:
+            cur_matr = cur_matr[:306]
+        data.append(cur_matr)
+        fnames.append(fname)
+    
+
+
+    data = np.ma.masked_invalid(data)
+    fnames = np.ma.masked_array(fnames, mask=np.all(data.mask, axis=1))
+    return data, fnames
 
 # --- This function is dataset-specific ---------- #
 def LoadSczPowerData(dirname, subj_names, missing_channel_id=245):
