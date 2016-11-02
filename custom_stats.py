@@ -28,9 +28,9 @@ def unpair_clust_f_test(cond1, cond2):
 def fdr(test_func):
     def corr_p_vals(cond1, cond2):
         from mne.stats import fdr_correction
-        p_vals = test_func(cond1, cond2)
+        p_vals, stat = test_func(cond1, cond2)
         _, p_vals_corr = fdr_correction(p_vals)
-        return p_vals_corr
+        return p_vals_corr, stat
     return corr_p_vals
 
 
@@ -54,11 +54,16 @@ def unpair_fdr_t_test(cond1, cond2):
 def no_corr_mannwhitneyu(cond1, cond2):
     from scipy.stats import mannwhitneyu
     p_vals = np.ones(cond1.shape[1])
+    stat = np.zeros(cond1.shape[1])
     for i in xrange(cond1.shape[1]):
-        stat, p_vals[i] = mannwhitneyu(
-            cond1[:, i], cond2[:, i], alternative='two-sided')
-    return p_vals
+        stat[i], p_vals[i] = mannwhitneyu(
+            cond1[:, i], cond2[:, i])
+    return p_vals * 2, stat
 
+def scipy_ttest_ind(cond1, cond2):
+    from scipy.stats import ttest_ind
+    stat, p_vals = ttest_ind(cond1, cond2, permutations=10000)
+    return p_vals, stat
 
 def unpair_no_corr_perm_t_test(cond1, cond2):
     #     n_permutations = 1000
@@ -79,6 +84,6 @@ def unpair_no_corr_perm_t_test(cond1, cond2):
 def GetStatMask(cond1, cond2, stat_test_func, p_thresh=0.01):
     """Produce sensor-level binary statistical mask"""
     # ----------------------------------------------------------------- #
-    p_vals = stat_test_func(cond1, cond2)
+    p_vals, stat = stat_test_func(cond1, cond2)
     mask = np.array(p_vals <= p_thresh)
-    return mask, p_vals
+    return mask, p_vals, stat
