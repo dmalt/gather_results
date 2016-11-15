@@ -11,7 +11,6 @@ get_ipython().magic(u'pylab inline')
 
 
 # In[2]:
-
 # --- Import modules --- #
 import numpy as np
 import matplotlib.pyplot as plt
