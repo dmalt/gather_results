@@ -1,8 +1,18 @@
 ''' Docstring'''
 import os.path as op
 import os
+from sklearn.svm import SVC 
+
 
 from load_data import LoadAutGamma
+
+def classify_powers():
+    pass
+
+
+def rm_masked(masked_data):
+    return masked_data.data[~np.all(masked_data.mask, axis=1)]
+
 
 
 if __name__ == '__main__':
@@ -35,6 +45,10 @@ if __name__ == '__main__':
 
                 DATA[cond][band][group] = cond_data
                 FNAMES[cond][band][group] = cond_fnames
+
+    cur_band = 'alpha'
+    cond1 = rm_masked(data['eo'][band]['K'])
+    cond2 = rm_masked(data['ec'][band]['K'])
 
     # ----------------------------------------- #
     # print fnames['Closed']['alpha']['Controls']
